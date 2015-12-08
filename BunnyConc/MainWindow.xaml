@@ -121,16 +121,16 @@
          </TabItem>
 
         <!--tab 3-->
-        <TabItem Name="StatisticsTab" Header="Statistics" GotFocus="StatisticsTab_GotFocus">
+        <TabItem Name="StatisticsTab" Header="Statistics">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20"></RowDefinition>
                     <RowDefinition Height="20"></RowDefinition>
                     <RowDefinition Height="20"></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="20"></RowDefinition>
+                    <RowDefinition Height="20"></RowDefinition>
+                    <RowDefinition Height="20"></RowDefinition>
+                    <RowDefinition Height="20"></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
@@ -141,10 +141,16 @@
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition Width="100"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="1" Grid.Column="1">Average word length</TextBlock>
-                <TextBlock Grid.Row="2" Grid.Column="1">Average sentence length</TextBlock>
-                <TextBlock Name="averageWordLengthTextBlock" Grid.Row="1" Grid.Column="2"></TextBlock>
-                <TextBlock Name="averageSentenceLengthTextBlock" Grid.Row="2" Grid.Column="2"></TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="1">Word Count</TextBlock>
+                <TextBlock Grid.Row="2" Grid.Column="1">Character Count</TextBlock>
+                <TextBlock Grid.Row="3" Grid.Column="1">Character Count (No spaces and punctuations)</TextBlock>
+                <TextBlock Grid.Row="4" Grid.Column="1">Average word length</TextBlock>
+                <TextBlock Grid.Row="5" Grid.Column="1">Average sentence length (words)</TextBlock>
+                <TextBlock Name="wordCountTextBlock" Grid.Row="1" Grid.Column="2"></TextBlock>
+                <TextBlock Name="allCharactersTextBlock" Grid.Row="2" Grid.Column="2"></TextBlock>
+                <TextBlock Name="allPureCharactersTextBlock" Grid.Row="3" Grid.Column="2"></TextBlock>
+                <TextBlock Name="averageWordLengthTextBlock" Grid.Row="4" Grid.Column="2"></TextBlock>
+                <TextBlock Name="averageSentenceLengthTextBlock" Grid.Row="5" Grid.Column="2"></TextBlock>
             </Grid>
         </TabItem>
 

@@ -66,6 +66,7 @@ namespace BunnyConc
             inputString = InputTextBox.Text;
             if (inputString.Length < 1)
                 inputString = null;
+            Statistics();
         }
 
         private void GetWords()
@@ -102,12 +103,13 @@ namespace BunnyConc
         {
             GetWords();
             GetSentences();
+            float wordsCount = 0;
+            float charactersCount = 0;
 
             // average word length
             if (words.Length > 0)
             {
-                float wordsCount = 0;
-                float charactersCount = 0;
+
                 foreach (string word in words)
                 {
                     if (word.Length > 0)
@@ -139,6 +141,11 @@ namespace BunnyConc
                 averageSentenceLengthTextBlock.Text = Math.Round(averageSentenceLength, 3).ToString();
             }
             else averageSentenceLengthTextBlock.Text = "N/A";
+
+            // word count
+            wordCountTextBlock.Text = wordsCount.ToString();
+            allCharactersTextBlock.Text = InputTextBox.Text.Length.ToString();
+            allPureCharactersTextBlock.Text = charactersCount.ToString();
         }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -313,12 +320,6 @@ namespace BunnyConc
         {
             if (e.Key == Key.Enter)
                 SearchButton_Click(null, null);
-        }
-
-        private void StatisticsTab_GotFocus(object sender, RoutedEventArgs e)
-        {
-            //When the tab is clicked, do Statistics.
-            Statistics();
         }
 
         private void LeftCountComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
