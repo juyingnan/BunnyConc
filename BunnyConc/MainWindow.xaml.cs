@@ -42,6 +42,10 @@ namespace BunnyConc
         Stopwatch stopWatch;
         string[] words;
         string[] sentences;
+        int LeftWordCount;
+        int RightWordCount;
+        int maxLeftRightCount = 3;
+        char[] wordsDelimiterChars = { '~', '!', '@', '#', '$', '%', '^', '&', '*', '\\', '(', ')', '+', '-', '/', '|', '<', '>', '{', '}', '[', ']', ':', ';', ',', '.', '!', '?', '"', '`', ' ', '\n', '\t' };
 
         private void OpenFileDialogButton_Click(object sender, RoutedEventArgs e)
         {
@@ -65,7 +69,6 @@ namespace BunnyConc
             if (inputString != null)
             {
                 // average words length
-                char[] wordsDelimiterChars = { '~', '!', '@', '#', '$', '%', '^', '&', '*', '\\', '(', ')', '+', '-', '/', '|', '<', '>', '{', '}', '[', ']', ':', ';', ',', '.', '!', '?', '"', '`', ' ' };
                 words = inputString.Split(wordsDelimiterChars, StringSplitOptions.RemoveEmptyEntries);
             }
         }
@@ -167,10 +170,13 @@ namespace BunnyConc
         private void Search(string inputString, string searchString)
         {
             GetSentences();
+
             /*
             Search keyword in each sentences.
             */
+            //do search
             ResultEntries.Clear();
+            int sentenceIndex = 0;
             foreach (string sentence in sentences)
             {
                 MatchCollection results = Regex.Matches(sentence.ToUpper(), string.Format(@"\b{0}\b", Regex.Escape(searchString.ToUpper())));
@@ -178,17 +184,125 @@ namespace BunnyConc
                 {
                     for (int i = 0; i < results.Count; i++)
                     {
-                        ResultEntry entry = new ResultEntry();
+                        // Extend Left & Right Part
+                        String LPart = sentence.Substring(0, results[i].Index);
+                        String RPart = sentence.Substring(results[i].Index + results[i].Value.Length);
+                        if (sentenceIndex > 0) LPart = sentences[sentenceIndex - 1] + " " + LPart;
+                        if (sentenceIndex + 1 < sentences.Length) RPart = RPart + " " + sentences[sentenceIndex + 1];
+                        // Get Left & Right Words
+                        string[] LWords = new string[LeftWordCount];
+                        for (int j = 0; j < LeftWordCount; j++)
+                        {
+                            LWords[j] = GetLeftWord(ref LPart);
+                            LWords[j] = LWords[j].Replace('\n', ' ');
+                            LWords[j] = LWords[j].Replace('\r', ' ');
+                        }
+                        string[] RWords = new string[RightWordCount];
+                        for (int j = 0; j < RightWordCount; j++)
+                        {
+                            RWords[j] = GetRightWord(ref RPart);
+                            RWords[j] = RWords[j].Replace('\n', ' ');
+                            RWords[j] = RWords[j].Replace('\r', ' ');
+                        }
+
+                        //LN RN length CUT
+                        int LRPartLength = 30;
+                        if (LPart.Length > LRPartLength) LPart = LPart.Substring(LPart.Length - LRPartLength);
+                        if (RPart.Length > LRPartLength) RPart = RPart.Substring(0, LRPartLength);
+                        LPart = LPart.Replace('\n', ' ');
+                        RPart = RPart.Replace('\n', ' ');
+                        LPart = LPart.Replace('\r', ' ');
+                        RPart = RPart.Replace('\r', ' ');
+                        //int LRPartLength = 3;
+                        //int LPartWordsCount = LPart.Split(wordsDelimiterChars).Length - 1;
+                        //if (LPartWordsCount >= LRPartLength)
+                        //{
+                        //    for (int j = 0; j < LPartWordsCount - LRPartLength; j++)
+                        //    {
+                        //        GetRightWord(ref LPart);
+                        //    }
+                        //}
+                        //int RPartWordsCount = RPart.Count(x => x == ' ');
+                        //if (RPartWordsCount >= LRPartLength)
+                        //{
+                        //    for (int j = 0; j < RPartWordsCount - LRPartLength; j++)
+                        //    {
+                        //        GetLeftWord(ref RPart);
+                        //    }
+                        //}
+
+                        // Build data source
+                        ResultEntry entry = new ResultEntry(maxLeftRightCount);
                         entry.ID = (ResultEntries.Count + 1).ToString();
                         entry.keyWord = searchString;
                         entry.sentence = sentence;
                         entry.fileName = FilePathTextBlock.Text;
+                        for (int j = 0; j < LeftWordCount; j++)
+                        {
+                            entry.L[j] = LWords[j];
+                        }
+                        for (int j = 0; j < RightWordCount; j++)
+                        {
+                            entry.R[j] = RWords[j];
+                        }
+                        entry.LN = LPart;
+                        entry.RN = RPart;
                         ResultEntries.Add(entry);
                     }
                 }
+                sentenceIndex += 1;
             }
-            //Jump tp concordancing Tab
+            // Adjust datagrid column width
+            foreach (DataGridColumn c in ResultDataGrid.Columns)
+                c.Width = DataGridLength.SizeToCells;
+            ResultDataGrid.Columns[0].Width = DataGridLength.SizeToHeader;
+            // Jump tp concordancing Tab
             ConcordancingTab.Focus();
+            ResultDataGrid.ScrollIntoView(ResultDataGrid.Items[0], ResultDataGrid.Columns[8]);
+        }
+
+        private string GetRightWord(ref string rPart)
+        {
+            rPart = rPart.TrimStart();
+            int firstSpaceIndex = rPart.IndexOfAny(wordsDelimiterChars);
+            string rightWord;
+            if (firstSpaceIndex > -1)
+            {
+                if (firstSpaceIndex == 0)
+                {
+                    rightWord = rPart.Substring(0, 1);
+                    rPart = rPart.Substring(1);
+                }
+                else
+                {
+                    rightWord = " " + rPart.Substring(0, firstSpaceIndex);
+                    rPart = rPart.Substring(firstSpaceIndex);
+                }
+            }
+            else
+            {
+                rightWord = rPart;
+                rPart = "";
+            }
+            return rightWord;
+        }
+
+        private string GetLeftWord(ref string lPart)
+        {
+            lPart = lPart.TrimEnd();
+            int lastSpaceIndex = lPart.LastIndexOfAny(wordsDelimiterChars);
+            string leftWord;
+            if (lastSpaceIndex > -1)    // handle the punctuations
+            {
+                leftWord = lPart.Substring(lastSpaceIndex) + " ";
+                lPart = lPart.Substring(0, lastSpaceIndex) + " ";
+            }
+            else
+            {
+                leftWord = lPart;
+                lPart = "";
+            }
+            return leftWord;
         }
 
         private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -202,13 +316,40 @@ namespace BunnyConc
             //When the tab is clicked, do Statistics.
             Statistics();
         }
-    }
 
-    public class ResultEntry
-    {
-        public string ID { get; set; }
-        public string keyWord { get; set; }
-        public string sentence { get; set; }
-        public string fileName { get; set; }
+        private void LeftCountComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            LeftWordCount = Int32.Parse((LeftCountComboBox.SelectedItem as ComboBoxItem).Content.ToString());
+        }
+
+        private void RightCountComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            RightWordCount = Int32.Parse((RightCountComboBox.SelectedItem as ComboBoxItem).Content.ToString());
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            SearchButton_Click(sender, e);
+        }
+
+        public class ResultEntry : INotifyPropertyChanged
+        {
+            public ResultEntry(int leftRightCount)
+            {
+                L = new string[leftRightCount];
+                R = new string[leftRightCount];
+            }
+
+            public string ID { get; set; }
+            public string keyWord { get; set; }
+            public string sentence { get; set; }
+            public string fileName { get; set; }
+            public string LN { get; set; }
+            public string[] L { get; set; }
+            public string RN { get; set; }
+            public string[] R { get; set; }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+        }
     }
 }
