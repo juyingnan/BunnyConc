@@ -32,12 +32,16 @@ namespace BunnyConc
             ResultEntries = new ObservableCollection<ResultEntry>();
             ResultDataGrid.DataContext = ResultEntries;
             stopWatch = new Stopwatch();
+            words = new string[0];
+            sentences = new string[0];
         }
 
         string inputString;
         string searchString;
         ObservableCollection<ResultEntry> ResultEntries;
         Stopwatch stopWatch;
+        string[] words;
+        string[] sentences;
 
         private void OpenFileDialogButton_Click(object sender, RoutedEventArgs e)
         {
@@ -54,6 +58,80 @@ namespace BunnyConc
             inputString = InputTextBox.Text;
             if (inputString.Length < 1)
                 inputString = null;
+        }
+
+        private void GetWords()
+        {
+            if (inputString != null)
+            {
+                // average words length
+                char[] wordsDelimiterChars = { '~', '!', '@', '#', '$', '%', '^', '&', '*', '\\', '(', ')', '+', '-', '/', '|', '<', '>', '{', '}', '[', ']', ':', ';', ',', '.', '!', '?', '"', '`', ' ' };
+                words = inputString.Split(wordsDelimiterChars, StringSplitOptions.RemoveEmptyEntries);
+            }
+        }
+
+        private void GetSentences()
+        {
+            if (inputString != null)
+            {
+                /*
+                Split the article to sentences and give punctuations back.
+                */
+                char[] delimiterChars = { '.', ';', '?', '!' };
+                MatchCollection punctuationPositions = Regex.Matches(inputString, @"[.;?!]");
+                sentences = inputString.Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries);
+                ///TODO: "...", "???", "!!" not match
+                if (punctuationPositions.Count == sentences.Length)
+                {
+                    for (int i = 0; i < punctuationPositions.Count; i++)
+                    {
+                        sentences[i] = sentences[i].Trim() + punctuationPositions[i].Value;
+                    }
+                }
+            }
+        }
+
+        private void Statistics()
+        {
+            GetWords();
+            GetSentences();
+
+            // average word length
+            if (words.Length > 0)
+            {
+                float wordsCount = 0;
+                float charactersCount = 0;
+                foreach (string word in words)
+                {
+                    if (word.Length > 0)
+                    {
+                        charactersCount += word.Length;
+                        wordsCount += 1;
+                    }
+                }
+                float averageWordLength = charactersCount / wordsCount;
+                averageWordLengthTextBlock.Text = Math.Round(averageWordLength, 3).ToString();
+            }
+            else averageWordLengthTextBlock.Text = "N/A";
+
+            // average sentence length
+            if (sentences.Length > 0)
+            {
+                float sentenceLengthCount = 0;
+                float sentenceCount = 0;
+                foreach (string sentence in sentences)
+                {
+                    if (sentence.Length > 0)
+                    {
+                        float sentenceLength = sentence.Count(x => x == ' ') + 1; // word count = space + 1
+                        sentenceLengthCount += sentenceLength;
+                        sentenceCount += 1;
+                    }
+                }
+                float averageSentenceLength = sentenceLengthCount / sentenceCount;
+                averageSentenceLengthTextBlock.Text = Math.Round(averageSentenceLength, 3).ToString();
+            }
+            else averageSentenceLengthTextBlock.Text = "N/A";
         }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -88,21 +166,7 @@ namespace BunnyConc
 
         private void Search(string inputString, string searchString)
         {
-            /*
-            Split the article to sentences and give punctuations back.
-            */
-            char[] delimiterChars = { '.', ';', '?', '!' };
-            MatchCollection punctuationPositions = Regex.Matches(inputString, @"[.;?!]");
-            string[] sentences = inputString.Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries);
-            ///TODO: "...", "???", "!!" not match
-            if (punctuationPositions.Count == sentences.Length)
-            {
-                for (int i = 0; i < punctuationPositions.Count; i++)
-                {
-                    sentences[i] = sentences[i].Trim() + punctuationPositions[i].Value;
-                }
-            }
-
+            GetSentences();
             /*
             Search keyword in each sentences.
             */
@@ -123,12 +187,20 @@ namespace BunnyConc
                     }
                 }
             }
+            //Jump tp concordancing Tab
+            ConcordancingTab.Focus();
         }
 
         private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
                 SearchButton_Click(null, null);
+        }
+
+        private void StatisticsTab_GotFocus(object sender, RoutedEventArgs e)
+        {
+            //When the tab is clicked, do Statistics.
+            Statistics();
         }
     }
 

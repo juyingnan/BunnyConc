@@ -25,7 +25,7 @@
         </TabItem>
         
         <!--tab 2-->
-        <TabItem Header="Tab 2">
+        <TabItem Name="ConcordancingTab" Header="Concordancing">
             <DataGrid Name="ResultDataGrid" ItemsSource="{Binding}" AutoGenerateColumns="True" HeadersVisibility="All"
                               Width="Auto" 
                               IsReadOnly="True">
@@ -33,11 +33,12 @@
         </TabItem>
 
         <!--tab 3-->
-        <TabItem Header="Statistics">
+        <TabItem Name="StatisticsTab" Header="Statistics" GotFocus="StatisticsTab_GotFocus">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="20"></RowDefinition>
+                    <RowDefinition Height="20"></RowDefinition>
+                    <RowDefinition Height="20"></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
@@ -47,6 +48,15 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="100"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="1" Grid.Column="1">Average word length</TextBlock>
+                <TextBlock Grid.Row="2" Grid.Column="1">Average sentence length</TextBlock>
+                <TextBlock Name="averageWordLengthTextBlock" Grid.Row="1" Grid.Column="2"></TextBlock>
+                <TextBlock Name="averageSentenceLengthTextBlock" Grid.Row="2" Grid.Column="2"></TextBlock>
             </Grid>
         </TabItem>
 
