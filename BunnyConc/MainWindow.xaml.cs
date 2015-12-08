@@ -53,6 +53,10 @@ namespace BunnyConc
             if (openFileDialog.ShowDialog() == true)
             {
                 FilePathTextBlock.Text = openFileDialog.FileName;
+                //StringBuilder mySB = new StringBuilder();
+                //mySB.Append(File.ReadAllText(openFileDialog.FileName));
+                //InputTextBox.Text = mySB.ToString();
+                ////InputTextBox.AppendText(File.ReadAllText(openFileDialog.FileName));
                 InputTextBox.Text = File.ReadAllText(openFileDialog.FileName);
             }
         }
