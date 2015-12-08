@@ -1,0 +1,58 @@
+﻿<Window x:Class="BunnyConc.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BunnyConc"
+        mc:Ignorable="d"
+        Title="BunnyConc" Height="370" Width="525">
+    <!--tab 1-->
+    <TabControl>
+        <TabItem Header="Query">
+            <Grid>
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Name="OpenFileDialogButton" Width="100" HorizontalAlignment="Left" Click="OpenFileDialogButton_Click">Open a File...</Button>
+                        <TextBlock Name="FilePathTextBlock">Please Choose an input file.</TextBlock>
+                    </StackPanel>
+                    <TextBox Name="InputTextBox" Height="200" TextWrapping="WrapWithOverflow" VerticalScrollBarVisibility="Auto" TextChanged="InputTextBox_TextChanged"></TextBox>
+                    <TextBlock>Please input a keyword to search.</TextBlock>
+                    <TextBox Name="SearchTextBox" TextChanged="SearchTextBox_TextChanged" KeyDown="SearchTextBox_KeyDown"/>
+                    <Button Name="SearchButton" Width="100" HorizontalAlignment="Left" Click="SearchButton_Click">Search</Button>
+                    <TextBlock Name="TimerTextBlock">0s</TextBlock>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+        
+        <!--tab 2-->
+        <TabItem Header="Tab 2">
+            <DataGrid Name="ResultDataGrid" ItemsSource="{Binding}" AutoGenerateColumns="True" HeadersVisibility="All"
+                              Width="Auto" 
+                              IsReadOnly="True">
+            </DataGrid>
+        </TabItem>
+
+        <!--tab 3-->
+        <TabItem Header="Statistics">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+            </Grid>
+        </TabItem>
+
+        <!--tab 4-->
+        <TabItem Header="About">
+            
+        </TabItem>
+    </TabControl>    
+</Window>
