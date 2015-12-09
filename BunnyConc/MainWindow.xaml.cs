@@ -65,8 +65,7 @@ namespace BunnyConc
         {
             inputString = InputTextBox.Text;
             if (inputString.Length < 1)
-                inputString = null;
-            Statistics();
+                inputString = "";
         }
 
         private void GetWords()
@@ -101,6 +100,8 @@ namespace BunnyConc
 
         private void Statistics()
         {
+            // Get ready
+            //InputTextBox_TextChanged(null, null);
             GetWords();
             GetSentences();
             float wordsCount = 0;
@@ -269,7 +270,10 @@ namespace BunnyConc
             ResultDataGrid.Columns[0].Width = DataGridLength.SizeToHeader;
             // Jump tp concordancing Tab
             ConcordancingTab.Focus();
-            ResultDataGrid.ScrollIntoView(ResultDataGrid.Items[0], ResultDataGrid.Columns[8]);
+            if (ResultDataGrid.HasItems)
+            {
+                ResultDataGrid.ScrollIntoView(ResultDataGrid.Items[0], ResultDataGrid.Columns[8]);
+            }
         }
 
         private string GetRightWord(ref string rPart)
@@ -355,6 +359,17 @@ namespace BunnyConc
             public string[] R { get; set; }
 
             public event PropertyChangedEventHandler PropertyChanged;
+        }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.Source is TabControl)
+            {
+                if (StatisticsTab !=null & StatisticsTab.IsSelected)
+                {
+                    Statistics();
+                }
+            }
         }
     }
 }

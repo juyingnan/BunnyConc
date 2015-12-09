@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="BunnyConc" Height="400" Width="525" MinHeight="400" MinWidth="525">
     <!--tab 1-->
-    <TabControl>
+    <TabControl SelectionChanged="TabControl_SelectionChanged">
         <TabItem Header="Query">
             <Grid>
                 <StackPanel Orientation="Vertical">
