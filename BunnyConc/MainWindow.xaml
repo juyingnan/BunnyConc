@@ -11,16 +11,25 @@
         <TabItem Header="Query">
             <Grid>
                 <StackPanel Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal">
-                        <Button Name="OpenFileDialogButton" Width="100" HorizontalAlignment="Left" Click="OpenFileDialogButton_Click">Open a File...</Button>
-                        <TextBlock Name="FilePathTextBlock">Please Choose an input file.</TextBlock>
-                    </StackPanel>
-                    <TextBox Name="InputTextBox" Height="180" TextWrapping="WrapWithOverflow" VerticalScrollBarVisibility="Auto" TextChanged="InputTextBox_TextChanged"></TextBox>
+                    <GroupBox Height="Auto" Header="Input">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Margin="5,5,0,0" Name="OpenFileDialogButton" Width="100" HorizontalAlignment="Left" Click="OpenFileDialogButton_Click">Open a File...</Button>
+                                <TextBlock Name="FilePathTextBlock" Margin="20,0,0,0">Please Choose an input file.</TextBlock>
+                            </StackPanel>
+                            <TextBox Margin="5" Name="InputTextBox" Height="110" TextWrapping="WrapWithOverflow" VerticalScrollBarVisibility="Auto" TextChanged="InputTextBox_TextChanged"></TextBox>
+                        </StackPanel>
+                    </GroupBox>
                     <GroupBox Height="Auto" Header="Parameters">
-                    <StackPanel Orientation="Vertical">
-                    <TextBlock Margin="3,0,0,0">Please input a keyword to search.</TextBlock>
-                    <TextBox Margin="3,0,0,0" Name="SearchTextBox" TextChanged="SearchTextBox_TextChanged" KeyDown="SearchTextBox_KeyDown"/>
-                    <StackPanel  Margin="3,5,0,0" Orientation="Horizontal" Height="Auto">
+                        <StackPanel Orientation="Vertical" Margin="5,0,0,0">
+                        <TextBlock Margin="0,5,0,0">Please input a keyword to search.</TextBlock>
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
+                                <RadioButton Margin="0,0,5,0" Name="WordsRadioButton" IsChecked="True">Words</RadioButton>
+                                <RadioButton Margin="0,0,5,0" Name="CaseMatchedWordsRadioButton">Case Matched Words</RadioButton>
+                                <RadioButton Margin="0,0,5,0" Name="RegexRadioButton">Regex</RadioButton>
+                            </StackPanel>
+                    <TextBox Name="SearchTextBox" TextChanged="SearchTextBox_TextChanged" KeyDown="SearchTextBox_KeyDown"/>
+                    <StackPanel  Margin="0,5,0,0" Orientation="Horizontal" Height="Auto">
                         <Label>Left Words</Label>
                         <ComboBox Name="LeftCountComboBox" SelectedIndex="0" SelectionChanged="LeftCountComboBox_SelectionChanged">
                             <ComboBoxItem>3</ComboBoxItem>
@@ -34,8 +43,8 @@
                             <ComboBoxItem>1</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
-                    <Button Margin="3,5,0,0" Name="SearchButton" Width="100" HorizontalAlignment="Left" Click="SearchButton_Click">Search</Button>
-                    <TextBlock Margin="3,5,0,0" Name="TimerTextBlock">0s</TextBlock>
+                    <Button Margin="0,5,0,0" Name="SearchButton" Width="100" HorizontalAlignment="Left" Click="SearchButton_Click">Search</Button>
+                    <TextBlock Margin="0,5,0,0" Name="TimerTextBlock">0s</TextBlock>
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>

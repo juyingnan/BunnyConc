@@ -182,7 +182,6 @@ namespace BunnyConc
         private void Search(string inputString, string searchString)
         {
             GetSentences();
-
             /*
             Search keyword in each sentences.
             */
@@ -191,14 +190,15 @@ namespace BunnyConc
             int sentenceIndex = 0;
             foreach (string sentence in sentences)
             {
-                MatchCollection results = Regex.Matches(sentence.ToUpper(), string.Format(@"\b{0}\b", Regex.Escape(searchString.ToUpper())));
-                if (results.Count > 0)
+                MatchCollection results = GetSearchResults(sentence);
+                if (results != null)
                 {
                     for (int i = 0; i < results.Count; i++)
                     {
                         // Extend Left & Right Part
-                        String LPart = sentence.Substring(0, results[i].Index);
-                        String RPart = sentence.Substring(results[i].Index + results[i].Value.Length);
+                        string LPart = sentence.Substring(0, results[i].Index);
+                        string RPart = sentence.Substring(results[i].Index + results[i].Value.Length);
+                        string actualKeyword = sentence.Substring(results[i].Index, results[i].Value.Length);
                         if (sentenceIndex > 0) LPart = sentences[sentenceIndex - 1] + " " + LPart;
                         if (sentenceIndex + 1 < sentences.Length) RPart = RPart + " " + sentences[sentenceIndex + 1];
                         // Get Left & Right Words
@@ -246,7 +246,7 @@ namespace BunnyConc
                         // Build data source
                         ResultEntry entry = new ResultEntry(maxLeftRightCount);
                         entry.ID = (ResultEntries.Count + 1).ToString();
-                        entry.keyWord = searchString;
+                        entry.keyWord = actualKeyword;
                         entry.sentence = sentence;
                         entry.fileName = FilePathTextBlock.Text;
                         for (int j = 0; j < LeftWordCount; j++)
@@ -262,6 +262,7 @@ namespace BunnyConc
                         ResultEntries.Add(entry);
                     }
                 }
+                else break;
                 sentenceIndex += 1;
             }
             // Adjust datagrid column width
@@ -274,6 +275,37 @@ namespace BunnyConc
             {
                 ResultDataGrid.ScrollIntoView(ResultDataGrid.Items[0], ResultDataGrid.Columns[8]);
             }
+        }
+
+        private MatchCollection GetSearchResults(string sentence)
+        {
+            MatchCollection results;
+            if (WordsRadioButton.IsChecked == true)
+            {
+                results = Regex.Matches(sentence.ToUpper(), string.Format(@"\b{0}\b", Regex.Escape(searchString.ToUpper())));
+            }
+            else if (CaseMatchedWordsRadioButton.IsChecked == true)
+            {
+                results = Regex.Matches(sentence, string.Format(@"\b{0}\b", Regex.Escape(searchString)));
+            }
+            else if (RegexRadioButton.IsChecked == true)
+            {
+                try
+                {
+                    results = Regex.Matches(sentence.ToUpper(), string.Format(@"\b{0}\b", new Regex(searchString)));
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                    return null;
+                }
+            }
+            else
+            {
+                // default, pure words, no case match
+                results = Regex.Matches(sentence.ToUpper(), string.Format(@"\b{0}\b", Regex.Escape(searchString.ToUpper())));
+            }
+            return results;
         }
 
         private string GetRightWord(ref string rPart)
