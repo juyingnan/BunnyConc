@@ -22,7 +22,7 @@
                     </GroupBox>
                     <GroupBox Height="Auto" Header="Parameters">
                         <StackPanel Orientation="Vertical" Margin="5,0,0,0">
-                        <TextBlock Margin="0,5,0,0">Please input a keyword to search.</TextBlock>
+                        <TextBlock Margin="0,5,0,0">Please input to search:</TextBlock>
                             <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
                                 <RadioButton Margin="0,0,5,0" Name="WordsRadioButton" IsChecked="True">Words</RadioButton>
                                 <RadioButton Margin="0,0,5,0" Name="CaseMatchedWordsRadioButton">Case Matched Words</RadioButton>
