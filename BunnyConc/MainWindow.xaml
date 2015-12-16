@@ -13,8 +13,8 @@
                 <StackPanel Orientation="Vertical">
                     <GroupBox Height="Auto" Header="Input">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Margin="5,5,0,0" Name="OpenFileDialogButton" Width="100" HorizontalAlignment="Left" Click="OpenFileDialogButton_Click">Open a File...</Button>
+                            <StackPanel Margin="5,5,0,0" Orientation="Horizontal">
+                                <Button Name="OpenFileDialogButton" Width="100" HorizontalAlignment="Left" Click="OpenFileDialogButton_Click">Open a File...</Button>
                                 <TextBlock Name="FilePathTextBlock" Margin="20,0,0,0">Please Choose an input file.</TextBlock>
                             </StackPanel>
                             <TextBox Margin="5" Name="InputTextBox" Height="110" TextWrapping="WrapWithOverflow" VerticalScrollBarVisibility="Auto" TextChanged="InputTextBox_TextChanged"></TextBox>
